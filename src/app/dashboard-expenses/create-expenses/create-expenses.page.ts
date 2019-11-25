@@ -197,6 +197,11 @@ export class CreateExpensesPage implements OnInit {
   ngOnInit() {}
 
   saveExpense() {
-    this.dbService.addExpenseItem({expenseFor: this.expenseFor, date: this.date, amount: this.amount, currency: this.currency});
+    this.dbService.addExpenseItem({
+      expenseFor: this.expenseFor,
+      date: new Date(this.date).getTime(),
+      amount: this.amount,
+      currency: this.currency
+    });
   }
 }
