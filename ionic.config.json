@@ -1,5 +1,7 @@
 {
   "name": "expenses-management",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }
