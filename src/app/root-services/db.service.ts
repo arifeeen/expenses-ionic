@@ -1,55 +1,46 @@
 import { Injectable } from '@angular/core';
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
-import { Platform } from '@ionic/angular';
+import { Platform} from '@ionic/angular';
+import { Plugins } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DbService {
-  dbObject: SQLiteObject;
-  readonly databaseName = 'expense_management.db';
-  readonly tableName = 'expense_table';
+  Storage = Plugins.Storage;
 
-  constructor(private sqLite: SQLite , private platform: Platform) {
+  constructor(private platform: Platform) {
     this.platform.ready().then(() => {
-      this.createDB();
+      this.generateUserStore();
     });
   }
 
-  createDB() {
-    this.sqLite
-      .create({
-        name: this.databaseName,
-        location: 'default'
-      })
-      .then((res: SQLiteObject) => {
-        this.dbObject = res;
-        console.log('database created');
-      }).catch(err => {
-        console.log('db cannot be created');
-      });
+  async generateUserStore() {
+    const checkStore = await this.Storage.get({key: 'expenseStore'});
+    if (checkStore.value) {
+      return;
+    }
+    await this.Storage.set({key: 'expenseStore', value: JSON.stringify([])});
   }
 
-  createTable() {
-    // tslint:disable-next-line: max-line-length
-    return this.dbObject
-      .executeSql(
-        'CREATE TABLE IF NOT EXISTS ' +
-          this.tableName +
-          ' (pid INTEGER PRIMARY KEY, expensefor varchar(255),amount decimal(60,2),currency varchar(5),date DATE)',
-        []
-      );
+  async addExpenseItem(value: any) {
+    let expenseStore = await this.Storage.get({key: 'expenseStore'});
+    expenseStore = JSON.parse(expenseStore.value);
+    (expenseStore as any).push({...value, id: this.generateRandomNumber()});
+    const res = await this.Storage.set({key: 'expenseStore', value: JSON.stringify(expenseStore)});
+    console.log('res', res);
   }
 
-  insertData(expenseFor, amount, currency, date) {
-    return this.dbObject.executeSql(`insert into  ${this.tableName} values (${expenseFor},${amount},${currency},${date})`, []);
+  async removeExpenseItem(id: number) {
+    let expenseStore = await this.Storage.get({key: 'expenseStore'});
+    expenseStore = JSON.parse(expenseStore.value);
+    (expenseStore as any).filter(obj => obj.id !== id);
+    await this.Storage.set({key: 'expensStore', value: JSON.stringify(expenseStore)});
   }
 
-  getRows() {
-    return this.dbObject.executeSql(`select * from ${this.tableName}`, []);
+  generateRandomNumber() {
+    const ranNumber = Math.floor(Math.random() * 100000);
+    return ranNumber;
   }
 
-  deleteRow(item) {
-    return this.dbObject.executeSql(`delete from ${this.tableName} where pid = ${item.pid}`), [];
-  }
+
 }
