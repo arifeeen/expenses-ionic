@@ -1,28 +1,59 @@
 <ion-header>
   <ion-toolbar color="primary">
-    <ion-title class="ion-text-center">View Expenses</ion-title>
+    <ion-title class="ion-text-center">View Expenses
+      </ion-title>
+      <ion-buttons slot="primary">
+          <ion-button *ngIf="!filterOptions" (click)="filterOptions = !filterOptions" >
+              <ion-icon  slot="icon-only" name="color-filter" ></ion-icon>
+              
+          </ion-button>
+          <ion-button *ngIf="filterOptions" (click)="filterData()">
+              <ion-icon  slot="icon-only" name="checkmark" ></ion-icon>
+          </ion-button>
+        </ion-buttons>
+    
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-<ion-grid>
-  <ion-row>
-    <ion-col size="12" size-sm="6" offset-sm="3">
-      <ion-list>
-        
+  <ion-grid>
+    <ion-row>
+      
+
+      <ion-col size="12" size-sm="6" offset-sm="3">
+        <div *ngIf="filterOptions">
+          <h4 class="ion-text-center"><ion-text color="secondary">Select dates for filter.</ion-text></h4>
+
+          <ion-item>
+            <ion-label position="floating">Start Date</ion-label>
+            <ion-datetime
+              displayFormat="DD/MM/YYYY"
+              [(ngModel)]="startDate"
+            ></ion-datetime>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">End Date</ion-label>
+            <ion-datetime
+              displayFormat="DD/MM/YYYY"
+              [(ngModel)]="endDate"
+            ></ion-datetime>
+          </ion-item>
+        </div>
+      </ion-col>
+      <ion-col size="12" size-sm="6" offset-sm="3">
+        <ion-list>
           <ion-card *ngFor="let items of expenses">
             <ion-card-header>
-                <ion-card-title>{{items.expenseFor}}</ion-card-title>
-                <ion-card-subtitle>{{items.date | date}}</ion-card-subtitle>
+              <ion-card-title>{{items.expenseFor}}</ion-card-title>
+              <ion-card-subtitle>{{items.date | date}}</ion-card-subtitle>
             </ion-card-header>
             <ion-card-content>
               <p>Amount: {{items.amount}}</p>
               <p>Currency: {{items.currency}}</p>
             </ion-card-content>
           </ion-card>
-        
-      </ion-list>
-    </ion-col>
-  </ion-row>
-</ion-grid>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

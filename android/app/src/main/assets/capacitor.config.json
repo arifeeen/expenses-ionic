@@ -1,5 +1,5 @@
 {
-  "appId": "io.ionic.starter",
+  "appId": "com.expense-made-simple.ionic",
   "appName": "expenses-management",
   "bundledWebRuntime": false,
   "npmClient": "npm",

@@ -10,7 +10,7 @@ export class CreateExpensesPage implements OnInit {
   expenseFor;
   date;
   amount;
-  currency;
+  currency = 'INR';
 
   currencyCodes = [
     "AED",
