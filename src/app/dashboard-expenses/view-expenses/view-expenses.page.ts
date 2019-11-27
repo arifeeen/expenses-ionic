@@ -12,6 +12,7 @@ export class ViewExpensesPage implements OnInit {
   filterOptions = false;
   startDate;
   endDate;
+  totalSpending = 0;
   constructor(
     private dbService: DbService,
     private loadingController: LoadingController
@@ -19,17 +20,19 @@ export class ViewExpensesPage implements OnInit {
 
   ngOnInit() {}
   ionViewWillEnter() {
+    this.totalSpending = 0;
     this.getExpenses();
   }
 
   async getExpenses() {
     this.expenses = await this.dbService.getAllExpenses();
-    console.log("expenses", this.expenses);
+    this.expenses.forEach(element => {
+      this.totalSpending += Number.parseFloat(element.amount);
+    });
   }
 
   filterData() {
     this.filterOptions = !this.filterOptions;
-    console.log("inside filter function", this.startDate, this.endDate);
     if (!this.startDate) {
       return;
     }
@@ -44,9 +47,10 @@ export class ViewExpensesPage implements OnInit {
         const startTime = new Date(this.startDate.slice(0, 10)).getTime();
         const endTime = new Date(this.endDate.slice(0, 10)).getTime();
         this.expenses = await this.dbService.getAllExpenses();
+        this.totalSpending = 0;
         this.expenses = this.expenses.filter(obj => {
           if (obj.date >= startTime && obj.date <= endTime) {
-            console.log(obj.date);
+            this.totalSpending += Number.parseFloat(obj.amount);
             return true;
           }
           return false;

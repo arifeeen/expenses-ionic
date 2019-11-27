@@ -192,14 +192,14 @@ export class CreateExpensesPage implements OnInit {
     "ZAR",
     "ZMW"
   ];
-  constructor(private dbService: DbService) {}
+  constructor(private dbService: DbService) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   saveExpense() {
     this.dbService.addExpenseItem({
       expenseFor: this.expenseFor,
-      date: new Date(this.date).getTime(),
+      date: new Date(this.date.slice(0, 10)).getTime(),
       amount: this.amount,
       currency: this.currency
     });
